@@ -11,12 +11,11 @@ const app = express();
 
 // Middleware
 const corsConfig = {
-  origin: '',
+  origin: '*',
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
-}
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+  }
 app.use(cors(corsConfig))
-app.options("", cors(corsConfig))
 app.use(express.json())
 
 
@@ -35,13 +34,20 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
       // Connect the client to the server	(optional starting in v4.7)
-     /*  await client.connect(); */
+      /* await client.connect(); */
 
       const toysCollection = client.db('toysDB').collection('allToys');
       const blogsCollection = client.db('toysDB').collection('blogs');
 
       app.get('/toys', async(req, res) => {
         const coffees = toysCollection.find();
+        const result =  await coffees.toArray();
+        res.send(result)
+      })
+      /* ------------------Set limitation for all toy page----------- */
+      app.get('/allToys', async(req, res) => {
+        const limit = 20;
+        const coffees = toysCollection.find().limit(limit);
         const result =  await coffees.toArray();
         res.send(result)
       })
