@@ -40,21 +40,32 @@ async function run() {
       const blogsCollection = client.db('toysDB').collection('blogs');
 
       app.get('/toys', async(req, res) => {
-        const coffees = toysCollection.find();
-        const result =  await coffees.toArray();
+        const toys = toysCollection.find();
+        const result =  await toys.toArray();
+        res.send(result)
+      })
+
+       /* ------------------Data Getting With Query----------- */
+      app.get('/myToys', async(req, res) => {
+        let query = {};
+        if(req.query?.email){
+          query = {email : req.query.email}
+        }
+        const result =  await toysCollection.find(query).toArray();
         res.send(result)
       })
       /* ------------------Set limitation for all toy page----------- */
       app.get('/allToys', async(req, res) => {
         const limit = 20;
-        const coffees = toysCollection.find().limit(limit);
-        const result =  await coffees.toArray();
+        const toys = toysCollection.find().limit(limit);
+        const result =  await toys.toArray();
         res.send(result)
       })
 
+       /* ------------------Blog Question and Answer----------- */
       app.get('/blogs', async(req, res) => {
-        const coffees = blogsCollection.find();
-        const result =  await coffees.toArray();
+        const blogs = blogsCollection.find();
+        const result =  await blogs.toArray();
         res.send(result)
       })
 
