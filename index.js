@@ -10,7 +10,13 @@ const app = express();
 
 
 // Middleware
-app.use(cors())
+const corsConfig = {
+  origin: '',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}
+app.use(cors(corsConfig))
+app.options("", cors(corsConfig))
 app.use(express.json())
 
 
@@ -29,13 +35,19 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
       // Connect the client to the server	(optional starting in v4.7)
-      await client.connect();
+     /*  await client.connect(); */
 
       const toysCollection = client.db('toysDB').collection('allToys');
-      const blogCollection = client.db('toysDB').collection('blogs');
+      const blogsCollection = client.db('toysDB').collection('blogs');
 
       app.get('/toys', async(req, res) => {
         const coffees = toysCollection.find();
+        const result =  await coffees.toArray();
+        res.send(result)
+      })
+
+      app.get('/blogs', async(req, res) => {
+        const coffees = blogsCollection.find();
         const result =  await coffees.toArray();
         res.send(result)
       })
@@ -56,9 +68,6 @@ app.get('/' , (req, res) => {
     res.send('Welcome to Our Queen Toy Server')
 })
 
-app.get('/about' , (req, res) => {
-    res.send('This is our About Route')
-})
 
 
 
