@@ -49,7 +49,7 @@ async function run() {
       app.get('/myToys', async(req, res) => {
         let query = {};
         if(req.query?.email){
-          query = {email : req.query.email}
+          query = {sellerEmail : req.query.email}
         }
         const result =  await toysCollection.find(query).toArray();
         res.send(result)
@@ -69,6 +69,7 @@ async function run() {
         res.send(result)
       })
 
+      /* ------------------Get Single Toy Data----------- */
       app.get('/toyDetails/:id', async(req, res) => {
         const iD = req.params.id;
         const query = {_id: new ObjectId(iD)};
@@ -76,11 +77,20 @@ async function run() {
         res.send(result)
       })
 
+      /* ------------------POST An Item ----------- */
       app.post( '/addAToy', async(req, res) => {
         const newToy = req.body;
         const result = await toysCollection.insertOne(newToy);
         res.send(result)
   
+      })
+
+      /* ------------------Delete An Item ----------- */
+      app.delete ('/toy/:id', async(req, res) => {
+        const iD = req.params.id;
+        const query = {_id: new ObjectId(iD)};
+        const result = await toysCollection.deleteOne(query);
+        res.send(result)
       })
   
       // Send a ping to confirm a successful connection
@@ -98,8 +108,6 @@ async function run() {
 app.get('/' , (req, res) => {
     res.send('Welcome to Our Queen Toy Server')
 })
-
-
 
 
 
